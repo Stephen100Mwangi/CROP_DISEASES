@@ -1,0 +1,116 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id              Int            @id @default(autoincrement())
+  name            String?
+  email           String         @unique
+  password        String
+  role            String        // In this case this project will have two types of users - "farmer", "admin"
+  profilePicture  String?
+  analysisHistory Analysis[]     @relation("UserAnalyses")
+  notifications   Notification[] @relation("UserNotifications")
+  location        String?
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+  ForumPost       ForumPost[]
+  Comment         Comment[]
+  ImageUpload     ImageUpload[]
+}
+
+model Disease {
+  id          Int        @id @default(autoincrement())
+  name        String     @unique
+  cropType    String
+  symptoms    String[]    // Array of symptoms
+  images      String[]    // Array of URLs
+  causes      String
+  treatments  String[]    // Array of recommended treatments
+  riskLevel   String      // This can be "Low", "Moderate", "High"
+  lastUpdated DateTime   @default(now())
+  Analysis    Analysis[]
+  Alert       Alert[]
+}
+
+model Analysis {
+  id                Int           @id @default(autoincrement())
+  userId            Int
+  user              User          @relation("UserAnalyses", fields: [userId], references: [id])
+  imageUrl          String
+  analysisDate      DateTime      @default(now())
+  detectedDiseaseId Int
+  detectedDisease   Disease       @relation(fields: [detectedDiseaseId], references: [id])
+  confidenceScore   Float
+  recommendations   String[] // Array of recommended actions
+  feedbackGiven     Boolean       @default(false)
+  ImageUpload       ImageUpload[]
+}
+
+model ForumPost {
+  id         Int       @id @default(autoincrement())
+  userId     Int
+  user       User      @relation(fields: [userId], references: [id])
+  title      String
+  content    String
+  tags       String[] // Array of tags
+  comments   Comment[] // Embedded comments
+  likesCount Int       @default(0)
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+}
+
+model Comment {
+  id          Int        @id @default(autoincrement())
+  userId      Int
+  user        User       @relation(fields: [userId], references: [id])
+  content     String
+  createdAt   DateTime   @default(now())
+  ForumPost   ForumPost? @relation(fields: [forumPostId], references: [id])
+  forumPostId Int?
+}
+
+model Notification {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  user      User     @relation("UserNotifications", fields: [userId], references: [id])
+  title     String
+  message   String
+  type      String // e.g., "Disease Alert", "Community Update"
+  isRead    Boolean  @default(false)
+  createdAt DateTime @default(now())
+}
+
+model Alert {
+  id         Int      @id @default(autoincrement())
+  title      String
+  message    String
+  location   String
+  diseaseId  Int
+  disease    Disease  @relation(fields: [diseaseId], references: [id])
+  validUntil DateTime
+  createdAt  DateTime @default(now())
+}
+
+model ImageUpload {
+  id         Int       @id @default(autoincrement())
+  userId     Int
+  user       User      @relation(fields: [userId], references: [id])
+  imageUrl   String
+  uploadDate DateTime  @default(now())
+  status     String // e.g., "Pending", "Analyzed"
+  analysisId Int?
+  analysis   Analysis? @relation(fields: [analysisId], references: [id])
+  fileSize   Int
+}
