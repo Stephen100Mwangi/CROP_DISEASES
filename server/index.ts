@@ -3,6 +3,7 @@ import { Request, Response } from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv'
 import authRouter from './routes/authRouter'
+import diseaseRouter from './routes/diseaseRouter';
 
 dotenv.config();
 
@@ -15,6 +16,7 @@ app.use(cors())
 
 // Routes
 app.use('/auth',authRouter)
+app.use('/diseases',diseaseRouter)
 
 
 // Health Check
