@@ -8,8 +8,15 @@ import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
 const registerUser = async (req: Request, res: Response): Promise<void> => {
-  const { name, email, password, role, profilePicture } = req.body;
-  if (!name || !email || !role || !password) {
+  const {
+    name,
+    email,
+    password,
+    role,
+    profilePicture,
+    location,
+  } = req.body;
+  if (!name || !email || !role || !password || !location) {
     res.status(400).json({ message: "All fields are required" });
     return;
   } else {
@@ -23,7 +30,14 @@ const registerUser = async (req: Request, res: Response): Promise<void> => {
         // Create a new user
         const hashPassword = await bcrypt.hash(password, 10);
         const newUser = await prisma.user.create({
-          data: { name, email, password: hashPassword, profilePicture, role },
+          data: {
+            name,
+            email,
+            password: hashPassword,
+            profilePicture,
+            role,
+            location,
+          },
         });
 
         // Create a token

@@ -4,6 +4,11 @@ import cors from 'cors';
 import dotenv from 'dotenv'
 import authRouter from './routes/authRouter'
 import diseaseRouter from './routes/diseaseRouter';
+import analysisRouter from './routes/analysisRouter';
+import forumPostRouter from './routes/forumPostsRouter';
+import notificationsRouter from './routes/notificationsRouter';
+import alertRouter from './routes/alertRouter';
+import imageRouter from './routes/imageRouter';
 
 dotenv.config();
 
@@ -17,6 +22,11 @@ app.use(cors())
 // Routes
 app.use('/auth',authRouter)
 app.use('/diseases',diseaseRouter)
+app.use('/analysis',analysisRouter)
+app.use('/forumPosts',forumPostRouter)
+app.use('/notifications',notificationsRouter)
+app.use('/alerts',alertRouter);
+app.use('/imageUpload',imageRouter);
 
 
 // Health Check
@@ -24,8 +34,6 @@ app.get("/",(req:Request,res:Response)=>{
     res.status(200).json({message:"Welcome to CROPS DISEASES DETECTION app"})
     return;
 })
-
-
 
 // Listen to server
 const PORT = process.env.PORT || 5650;
