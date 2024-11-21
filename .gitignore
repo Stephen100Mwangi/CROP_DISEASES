@@ -3,3 +3,37 @@ client/node_modules/
 
 server/.env
 client/.env
+
+# Python
+python/__pycache__/
+python/*.py[cod]
+python/*$py.class
+python/*.so
+python/.Python
+python/venv/
+
+# Data
+python/data/
+
+# Models
+python/models/
+
+# IDEs
+python/.vscode/
+python/.idea/
+
+# Jupyter Notebook
+python/.ipynb_checkpoints
+
+# Distribution / packaging
+python/dist/
+python/build/
+python/*.egg-info/
+
+
+server/node_modules
+python/venv
+python/datasets
+python/saved_models
+python/model_training
+webSocket/node_modules

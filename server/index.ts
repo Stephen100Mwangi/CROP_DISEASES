@@ -9,6 +9,7 @@ import forumPostRouter from './routes/forumPostsRouter';
 import notificationsRouter from './routes/notificationsRouter';
 import alertRouter from './routes/alertRouter';
 import imageRouter from './routes/imageRouter';
+import messageRouter from './routes/messageRoute';
 
 dotenv.config();
 
@@ -27,6 +28,7 @@ app.use('/forumPosts',forumPostRouter)
 app.use('/notifications',notificationsRouter)
 app.use('/alerts',alertRouter);
 app.use('/imageUpload',imageRouter);
+app.use('/messages',messageRouter)
 
 
 // Health Check

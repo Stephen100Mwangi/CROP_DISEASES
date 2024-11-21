@@ -1,0 +1,63 @@
+@import url(https://fonts.googleapis.com/css?family=Roboto:100,100italic,300,300italic,regular,italic,500,500italic,700,700italic,900,900italic);
+@import url(https://fonts.googleapis.com/css?family=Montserrat:100,200,300,regular,500,600,700,800,900,100italic,200italic,300italic,italic,500italic,600italic,700italic,800italic,900italic);
+@import url(https://fonts.googleapis.com/css?family=Open+Sans:300,regular,500,600,700,800,300italic,italic,500italic,600italic,700italic,800italic);
+
+@import url(https://fonts.googleapis.com/css?family=Poppins:100,100italic,200,200italic,300,300italic,regular,italic,500,500italic,600,600italic,700,700italic,800,800italic,900,900italic);
+@import url(https://fonts.googleapis.com/css?family=Lato:100,100italic,300,300italic,regular,italic,700,700italic,900,900italic);
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.mainPhoto {
+  background-image: url("/rice.jpg");
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+}
+
+::-webkit-scrollbar {
+  width: 5px;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: rgba(179, 179, 179);
+}
+
+::-webkit-scrollbar-track {
+  background-color: #f1f1f1;
+}
+
+/* 
+For a crop diseases detection application, the design should reflect a sense of **trust, clarity, and nature**. The color palette and fonts should help convey a connection to agriculture while ensuring readability and accessibility. Here are some suggestions:
+
+### **Color Palette**
+1. **Primary Colors**:
+   - **Green** (representing healthy crops and nature): `#4CAF50` (a fresh and vibrant green)
+   - **Brown** (for soil and earth tones): `#8D6E63` (a warm, earthy brown)
+   - **Yellow** (for warnings or alerts about disease): `#FFEB3B` (a bright and attention-grabbing yellow)
+
+2. **Secondary Colors**:
+   - **Dark Green**: `#2E7D32` (for headings or emphasis)
+   - **Muted Beige**: `#D7CCC8` (as a soft, neutral background color)
+   - **Red** (to indicate disease or problems): `#F44336` (a bold red for critical alerts)
+
+3. **Accent Colors**:
+   - **Light Blue**: `#81D4FA` (for highlighting actionable items or information)
+   - **Soft Gray**: `#E0E0E0` (for borders, dividers, and less important text)
+
+### **Font Families**
+1. **Primary Font (for readability and clarity)**:
+   - **Roboto**: A modern sans-serif font that is highly readable and well-suited for UI/UX design.
+   - **Montserrat**: A clean and professional sans-serif font that works well for headings and body text.
+   - **Open Sans**: A versatile and easy-to-read sans-serif font, suitable for both headings and regular text.
+
+2. **Secondary Font (for emphasis and headings)**:
+   - **Poppins**: A stylish sans-serif font with geometric shapes, great for headings and emphasizing key information.
+   - **Lato**: A humanist sans-serif font that adds a friendly and warm touch, suitable for subheadings and captions.
+
+### **Additional Tips**
+- **Use Green and Red Wisely**: Since green and red are opposites, use them carefully to ensure that users with color blindness can distinguish between alerts. You might also incorporate icons or patterns to signify health or disease.
+- **Contrast and Readability**: Make sure there is sufficient contrast between text and background colors to ensure readability, especially in field conditions or outdoor environments.
+
+This combination of colors and fonts will create a professional, approachable, and nature-inspired interface for your application. */

@@ -1,8 +1,5 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+// This is your Prisma schema file
+// For more details, see: https://pris.ly/d/prisma-schema
 
 generator client {
   provider = "prisma-client-js"
@@ -13,35 +10,36 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+// Models
 model User {
   id              Int            @id @default(autoincrement())
   name            String?
   email           String         @unique
   password        String
-  role            String        // In this case this project will have two types of users - "farmer", "admin"
+  role            String // Possible values: "farmer", "admin"
   profilePicture  String?
   analysisHistory Analysis[]     @relation("UserAnalyses")
   notifications   Notification[] @relation("UserNotifications")
   location        String?
   createdAt       DateTime       @default(now())
   updatedAt       DateTime       @updatedAt
-  ForumPost       ForumPost[]
-  Comment         Comment[]
-  ImageUpload     ImageUpload[]
+  forumPosts      ForumPost[]
+  comments        Comment[]
+  imageUploads    ImageUpload[]
 }
 
 model Disease {
   id          Int        @id @default(autoincrement())
   name        String     @unique
   cropType    String
-  symptoms    String[]    // Array of symptoms
-  images      String[]    // Array of URLs
+  symptoms    String[] // Array of symptoms
+  images      String[] // Array of URLs
   causes      String
-  treatments  String[]    // Array of recommended treatments
-  riskLevel   String      // This can be "Low", "Moderate", "High"
+  treatments  String[] // Array of recommended treatments
+  riskLevel   String // "Low", "Moderate", "High"
   lastUpdated DateTime   @default(now())
-  Analysis    Analysis[]
-  Alert       Alert[]
+  analyses    Analysis[]
+  alerts      Alert[]
 }
 
 model Analysis {
@@ -55,7 +53,7 @@ model Analysis {
   confidenceScore   Float
   recommendations   String[] // Array of recommended actions
   feedbackGiven     Boolean       @default(false)
-  ImageUpload       ImageUpload[]
+  imageUploads      ImageUpload[]
 }
 
 model ForumPost {
@@ -64,8 +62,9 @@ model ForumPost {
   user       User      @relation(fields: [userId], references: [id])
   title      String
   content    String
-  tags       String[] // Array of tags
-  comments   Comment[] // Embedded comments
+  imageUrl   String?
+  tags       String[]
+  comments   Comment[]
   likesCount Int       @default(0)
   createdAt  DateTime  @default(now())
   updatedAt  DateTime  @updatedAt
@@ -77,8 +76,8 @@ model Comment {
   user        User       @relation(fields: [userId], references: [id])
   content     String
   createdAt   DateTime   @default(now())
-  ForumPost   ForumPost? @relation(fields: [forumPostId], references: [id])
   forumPostId Int?
+  forumPost   ForumPost? @relation(fields: [forumPostId], references: [id])
 }
 
 model Notification {
@@ -87,7 +86,7 @@ model Notification {
   user      User     @relation("UserNotifications", fields: [userId], references: [id])
   title     String
   message   String
-  type      String // e.g., "Disease Alert", "Community Update"
+  type      String // "Disease Alert", "Community Update", etc.
   isRead    Boolean  @default(false)
   createdAt DateTime @default(now())
 }
@@ -109,8 +108,19 @@ model ImageUpload {
   user       User      @relation(fields: [userId], references: [id])
   imageUrl   String
   uploadDate DateTime  @default(now())
-  status     String // e.g., "Pending", "Analyzed"
+  status     String // "Pending", "Analyzed", etc.
   analysisId Int?
   analysis   Analysis? @relation(fields: [analysisId], references: [id])
   fileSize   Int
+}
+
+model Message {
+  id          Int      @id @default(autoincrement())
+  senderId    Int
+  senderEmail String   @default("") // Providing a default value
+  senderName  String   @default("") // Providing a default value
+  receiverId  Int
+  content     String
+  status      String   @default("sent") // "sent", "delivered", "read"
+  timestamp   DateTime @default(now())
 }
