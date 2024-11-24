@@ -1,14 +1,13 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import toast, { Toaster } from "react-hot-toast";
 import { useEffect, useState } from "react";
 import { RiLogoutCircleFill } from "react-icons/ri";
 import { IoChatbubbleEllipsesSharp } from "react-icons/io5";
 import { ImFeed } from "react-icons/im";
 import { GiHammerSickle } from "react-icons/gi";
-import { FaSearch, FaUsers } from "react-icons/fa";
+import { FaUsers } from "react-icons/fa";
 import { MdOutlinePostAdd } from "react-icons/md";
 import { Link } from "react-router-dom";
-import { AiFillLike } from "react-icons/ai";
+import { AiFillHome, AiFillLike } from "react-icons/ai";
 import { FaCommentDots } from "react-icons/fa";
 import { FaLightbulb } from "react-icons/fa";
 import { IoMdShareAlt } from "react-icons/io";
@@ -28,10 +27,9 @@ interface Post {
 }
 
 const Dashboard = () => {
-  const [usersCount, setUsersCount] = useState(0);
+  const [usersCount] = useState(0);
   const [forumPosts, setForumPosts] = useState<Post[]>([]);
   const [like, setLike] = useState(false);
-  const [insightful, setInsightful] = useState(false);
   const [showCommentForm, setShowCommentForm] = useState(false);
   const [showLess, setShowLess] = useState(true);
   const [searchQuery, setSearchQuery] = useState<string>("");
@@ -41,6 +39,7 @@ const Dashboard = () => {
       const response = await fetch(`http://localhost:5650/forumPosts/all`);
 
       const data = await response.json();
+      console.log(data);
 
       if (!response.ok) {
         toast.error("Error fetching posts");
@@ -56,7 +55,7 @@ const Dashboard = () => {
   }, []);
 
   const filteredPosts = forumPosts.filter((eachPost) =>
-    searchQuery.toLowerCase().includes(eachPost.title.toLowerCase())
+    eachPost.title.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   const handleLike = async () => {
@@ -70,8 +69,6 @@ const Dashboard = () => {
   const changeView = async () => {
     setShowLess((prev) => !prev);
   };
-
-  // const handleSubmit = async () => {};
 
   return (
     <div className="flex space-x-0 h-screen w-full bg-gray">
@@ -96,10 +93,17 @@ const Dashboard = () => {
           />
           <IoIosSearch></IoIosSearch>
         </div>
-        <div className="flex space-x-3 text-gray hover:text-crop transition-all cursor-pointer p-2 w-56 items-center hover:bg-gray">
+        <Link
+          to={"/home"}
+          className="flex relative space-x-3 text-gray group transition-all hover:text-crop cursor-pointer p-2 w-56 items-center hover:bg-gray"
+        >
+          <AiFillHome className="text-xl" />
+          <p className="text-lg">Home</p>
+        </Link>
+        <Link to={"/feed"} className="flex space-x-3 text-gray hover:text-crop transition-all cursor-pointer p-2 w-56 items-center hover:bg-gray">
           <ImFeed className="text-xl"></ImFeed>
           <p className="text-lg">Feed</p>
-        </div>
+        </Link>
         <Link
           to={"/chat"}
           className="flex space-x-3 text-gray hover:text-crop transition-all cursor-pointer p-2 w-56 items-center hover:bg-gray"
@@ -107,14 +111,20 @@ const Dashboard = () => {
           <IoChatbubbleEllipsesSharp className="text-xl"></IoChatbubbleEllipsesSharp>
           <p className="text-lg">Chat</p>
         </Link>
-        <div className="flex space-x-3 text text-gray hover:text-crop transition-all cursor-pointer p-2 w-56 items-center hover:bg-gray">
+        <Link
+          to={"/posts"}
+          className="flex space-x-3 text bg-gray text-crop transition-all cursor-pointer p-2 w-56 items-center"
+        >
           <MdOutlinePostAdd className="text-xl"></MdOutlinePostAdd>
           <p className="text-lg">Posts</p>
-        </div>
-        <div className="flex space-x-3 text-gray hover:text-crop transition-all cursor-pointer p-2 w-56 items-center hover:bg-gray">
+        </Link>
+        <Link
+          to={"/diseases"}
+          className="flex space-x-3 text-gray hover:text-crop transition-all cursor-pointer p-2 w-56 items-center hover:bg-gray"
+        >
           <GiHammerSickle className="text-xl"></GiHammerSickle>
           <p className="text-lg">Diseases</p>
-        </div>
+        </Link>
         <div className="flex relative space-x-3 text-gray group transition-all hover:text-crop cursor-pointer p-2 w-56 items-center hover:bg-gray">
           <FaUsers className="text-xl" />
           <span className="absolute group-hover:text-gray group-hover:bg-crop hover:bg-crop -top-2.5 text-crop bg-gray flex size-5 items-center justify-center rounded-full text-sm left-1">
@@ -129,7 +139,7 @@ const Dashboard = () => {
         </div>
       </div>
       <div className="flex-[6] h-[100%] overflow-scroll py-5 grid grid-cols-2 overflow-x-hidden px-5 items-center justify-center flex-wrap gap-20">
-        {forumPosts.map((eachPost) => (
+        {filteredPosts.map((eachPost) => (
           <div
             className="w-[500px] shadow-xl bg-[#f9f9f9] p-3 max-h-fit rounded-xl flex flex-col space-y-3 items-center justify-center"
             key={eachPost.id}

@@ -1,0 +1,154 @@
+{
+  "diseases": [
+    {
+      "id": 1,
+      "name": "Rice Blast",
+      "images": [
+        "/riceBlast_003.jpeg",
+        "/riceBlast_003.jpeg"
+      ],
+      "description": "A fungal disease caused by Magnaporthe oryzae, leading to spindle-shaped lesions on leaves, nodes, and panicles.",
+      "managementPractices": [
+        "Use resistant varieties such as IR64.",
+        "Apply fungicides like tricyclazole or isoprothiolane.",
+        "Maintain proper field drainage to reduce humidity."
+      ],
+      "preventionMethods": [
+        "Avoid excessive nitrogen fertilizers.",
+        "Rotate crops to break the disease cycle.",
+        "Plant seeds certified as disease-free."
+      ]
+    },
+    {
+      "id": 2,
+      "name": "Sheath Blight",
+      "images": [
+        "sheathDisease_001.jpeg",
+        "sheathDisease_002.jpeg"
+      ],
+      "description": "A fungal disease caused by Rhizoctonia solani, resulting in irregular lesions on the leaf sheath and eventual lodging.",
+      "managementPractices": [
+        "Improve spacing for better air circulation.",
+        "Apply fungicides like azoxystrobin or propiconazole.",
+        "Remove and burn infected plant residues."
+      ],
+      "preventionMethods": [
+        "Avoid over-fertilization with nitrogen.",
+        "Use resistant rice varieties when available.",
+        "Practice crop rotation."
+      ]
+    },
+    {
+      "id": 3,
+      "name": "Bacterial Leaf Blight",
+      "images": [
+        "/bacterialLeaf001.jpeg",
+        "/bacterial002.jpeg"
+      ],
+      "description": "A bacterial disease caused by Xanthomonas oryzae pv. oryzae, creating yellow to white streaks on leaves.",
+      "managementPractices": [
+        "Plant resistant varieties such as IR36.",
+        "Apply copper-based bactericides.",
+        "Ensure field sanitation by removing infected plants."
+      ],
+      "preventionMethods": [
+        "Avoid over watering fields.",
+        "Control leafhopper populations.",
+        "Use certified disease-free seeds."
+      ]
+    },
+    {
+      "id": 4,
+      "name": "Rice Tungro Disease",
+      "images": [
+        "/tungro1.jpeg"
+      ],
+      "description": "A viral disease transmitted by green leafhoppers, leading to stunted growth and yellowish-orange leaf discoloration.",
+      "managementPractices": [
+        "Plant resistant varieties like Matatag lines.",
+        "Control leafhoppers using insecticides.",
+        "Remove and destroy infected plants."
+      ],
+      "preventionMethods": [
+        "Synchronize planting times.",
+        "Encourage natural predators of leafhoppers.",
+        "Use healthy and clean seeds."
+      ]
+    },
+    {
+      "id": 5,
+      "name": "Brown Spot",
+      "images": [
+        "brownSpot.jpeg",
+        "brownSpot1.jpeg",
+        "brownSpot2.jpeg",
+        "brownSpot3.jpeg"
+      ],
+      "description": "Caused by the fungus Bipolaris oryzae, this disease produces brown spots on leaves, reducing photosynthesis.",
+      "managementPractices": [
+        "Use balanced fertilizers to improve plant vigor.",
+        "Apply fungicides like mancozeb or carbendazim.",
+        "Improve water management practices."
+      ],
+      "preventionMethods": [
+        "Use disease-free seeds.",
+        "Avoid stress conditions like drought.",
+        "Maintain proper field hygiene."
+      ]
+    },
+    {
+      "id": 6,
+      "name": "Stem Rot",
+      "images": [
+        "stemRot.jpeg"
+      ],
+      "description": "Caused by Sclerotium oryzae, this disease weakens the stem, leading to lodging and reduced grain yield.",
+      "managementPractices": [
+        "Apply fungicides like propiconazole.",
+        "Improve field drainage to reduce waterlogging.",
+        "Incorporate crop residues to promote soil health."
+      ],
+      "preventionMethods": [
+        "Use resistant rice varieties.",
+        "Practice crop rotation.",
+        "Avoid over-irrigation."
+      ]
+    },
+    {
+      "id": 7,
+      "name": "False Smut",
+      "images": [
+        "falseSmut.jpeg"
+      ],
+      "description": "Caused by Ustilaginoidea virens, this disease creates yellowish to green balls on grains.",
+      "managementPractices": [
+        "Apply fungicides during the flowering stage.",
+        "Remove infected panicles from the field.",
+        "Avoid excessive nitrogen fertilization."
+      ],
+      "preventionMethods": [
+        "Use resistant rice varieties.",
+        "Ensure proper field drainage.",
+        "Plant seeds certified as smut-free."
+      ]
+    },
+    {
+      "id": 8,
+      "name": "Grain Discoloration",
+      "images": [
+        "/grainDiscoloration.jpeg"
+      ],
+      "description": "A fungal or bacterial infection causing discoloration of rice grains, often leading to poor grain quality.",
+      "managementPractices": [
+        "Apply fungicides such as carbendazim.",
+        "Harvest at the right moisture level.",
+        "Dry grains properly before storage."
+      ],
+      "preventionMethods": [
+        "Store grains in a dry environment.",
+        "Use resistant varieties when available.",
+        "Ensure field sanitation."
+      ]
+    }
+  ]
+}

@@ -68,18 +68,28 @@ const LoginUser = () => {
   }
   return (
     <div className="h-screen w-full bg-gray font-poppins flex justify-center items-center">
-      <Toaster position="top-left"></Toaster>
-      <form onSubmit={loginUser} className="shadow-xl rounded-md p-5 py-10 w-fit bg-white flex flex-col space-y-8 justify-center items-center">
-        <p className="text-center font-bold text-xl">LogIn Here</p>
+      <Toaster
+        position="top-left"
+      ></Toaster>
+      <form
+        data-test="loginForm"
+        onSubmit={loginUser}
+        className="shadow-xl rounded-md p-5 py-10 w-fit bg-white flex flex-col space-y-8 justify-center items-center"
+      >
+        <p data-test="loginTitle" className="text-center font-bold text-xl">
+          Log in Here
+        </p>
         <div className="flex flex-col space-y-3 w-72">
           <label htmlFor="Email" className="font-bold text-base text-crop">
             Email
           </label>
           <input
+            data-test="emailField"
             type="email"
+            id="email"
             placeholder="Input your email"
             value={email}
-            onChange={(e)=>setEmail(e.target.value)}
+            onChange={(e) => setEmail(e.target.value)}
             className="p-2 focus:outline-crop font-thin focus:outline  text-black font-openSans w-[100%]"
           ></input>
         </div>
@@ -89,14 +99,22 @@ const LoginUser = () => {
           </label>
           <input
             type="password"
+            id="password"
             placeholder="Input your password"
             value={password}
-            onChange={(e)=>setPassword(e.target.value)}
+            onChange={(e) => setPassword(e.target.value)}
             className="p-2 focus:outline-crop font-thin focus:outline  text-black font-openSans w-[100%]"
           ></input>
         </div>
-        <button disabled={loading} className="bg-crop text-gray p-2 w-full rounded-full px-12 hover:shadow-xl hover:bg-gray hover:text-crop">
-          {loading ? <Spinner text={"Processing... Please wait"}></Spinner> : "Login"}
+        <button
+          disabled={loading}
+          className="bg-crop text-gray p-2 w-full rounded-full px-12 hover:shadow-xl hover:bg-gray hover:text-crop"
+        >
+          {loading ? (
+            <Spinner text={"Processing... Please wait"}></Spinner>
+          ) : (
+            "Login"
+          )}
         </button>
         <div className="flex space-x-5">
           <p className="text-red-500">Do not have an account</p>

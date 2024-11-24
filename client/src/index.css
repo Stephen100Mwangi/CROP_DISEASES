@@ -28,6 +28,16 @@
   background-color: #f1f1f1;
 }
 
+@layer utilities {
+  .hide-scrollbar {
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+  }
+  .hide-scrollbar::-webkit-scrollbar {
+    display: none;  /* Chrome, Safari and Opera */
+  }
+}
+
 /* 
 For a crop diseases detection application, the design should reflect a sense of **trust, clarity, and nature**. The color palette and fonts should help convey a connection to agriculture while ensuring readability and accessibility. Here are some suggestions:
 

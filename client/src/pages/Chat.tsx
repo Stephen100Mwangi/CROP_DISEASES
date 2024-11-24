@@ -3,7 +3,7 @@ import { ChangeEvent, FormEvent, useEffect, useRef, useState } from "react";
 import { IoIosSearch } from "react-icons/io";
 import Spinner from "../components/Spinner";
 import { formatDistanceToNow } from "date-fns";
-import { io, Socket } from "socket.io-client";
+import { Socket, io } from "socket.io-client";
 
 interface UserData {
   senderName: string;
@@ -17,6 +17,7 @@ interface UserData {
 interface Message {
   id: number;
   senderId: number;
+  senderName: string;
   receiverId: number;
   content: string;
   timestamp: string;
@@ -29,44 +30,42 @@ interface APIResponse<T> {
   message?: string;
 }
 
-interface ServerToClientEvents {
-  getMessage: (data: {
-    senderId: number;
-    text: string;
-    createdAt: string;
+// Interface for events coming from the server
+interface ServerToClient {
+  getUsers: (users: { userId: string; socketId: string }[]) => void;
+  receiveMessage: (message: Message) => void;
+  messageSent: (message: Message) => void;
+}
+
+//Interface for events sent back to the server
+interface ClientToServer {
+  newUser: (userId: string) => void;
+  sendMessage: (message: {
+    senderId: string;
+    receiverId: string;
+    content: string;
   }) => void;
-  getUsers: (users: { userId: number }[]) => void;
-}
-
-interface ClientToServerEvents {
-  sendMessage: (data: { content: string; receiverId: number }) => void;
-  addUser: (userId: number) => void;
-}
-
-interface ArrivalMessage {
-  senderId: number;
-  text: string;
-  createdAt: string | Date;
-}
-
-interface Chat {
-  id: number;
-  members: number[];
 }
 
 const Chat = () => {
   const [users, setUsers] = useState<UserData[]>([]);
   const [greeting, setGreeting] = useState("");
   const [userSelected, setUserSelected] = useState<UserData | null>(null);
-  const [currentUserId, setCurrentUserId] = useState(null);
+  const [currentUserId, setCurrentUserId] = useState<number | null>(null);
   const [friendId, setFriendId] = useState<number | null>(null);
-  const [currentChat, setCurrentChat] = useState(null);
   const [messages, setMessages] = useState<Message[]>([]);
   const [newMessage, setNewMessage] = useState("");
-  const [arrivalMessage, setArrivalMessage] = useState(null);
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const socket = useRef(io("ws://localhost:4580"));
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  // onlineUsers will be filled as users connect to the socket
+  const [onlineUsers, setOnlineUsers] = useState<
+    { userId: string; socketId: string }[]
+  >([]);
+
+  // Reference point for the socket
+  const socketRef = useRef<Socket<ServerToClient, ClientToServer>>();
 
   // This is a self validating function
   const loggedInUser: UserData | null = (() => {
@@ -79,45 +78,73 @@ const Chat = () => {
     }
   })();
 
-  // SOCKET.IO
   useEffect(() => {
-    // Ensure you have a token for authentication
-    const token = localStorage.getItem("token");
-
-    // Create a single socket instance with authentication
-    const socketInstance = io("ws://localhost:4580", {
-      auth: { token },
-    });
-
-    // Handle incoming messages
-    socketInstance.on("getMessage", (data) => {
-      setArrivalMessage({
-        senderId: data.senderId,
-        text: data.text,
-        createdAt: new Date(data.createdAt),
-      });
-    });
-
-    // Handle users list
-    socketInstance.on("getUsers", (users) => {
-      console.log("Connected Users:", users);
-    });
-
-    // Add current user when connected
-    if (currentUserId) {
-      socketInstance.emit("addUser", currentUserId);
+    // Check if we have a user logged in
+    if (!currentUserId) {
+      return;
     }
 
-    // Store socket in ref for use in other methods
-    socket.current = socketInstance;
+    // Initialize socket connection
+    socketRef.current = io("http://localhost:4580", {
+      transports: ["websocket"],
+      reconnection: true,
+      reconnectionAttempts: 5,
+      reconnectionDelay: 1000,
+    });
 
-    // Cleanup on component unmount
+    // Send userId to the socket on the backend
+    socketRef.current.on("connect", () => {
+      console.log("Client --- Connected to socket server");
+      if (currentUserId !== null) {
+        socketRef.current?.emit("newUser", currentUserId.toString());
+      }
+    });
+
+    socketRef.current?.on("receiveMessage", (newMessage) => {
+      setMessages((prevMessages) => [...prevMessages, newMessage]);
+    });
+
+    // Listen for online users updates
+    socketRef.current.on("getUsers", (users) => {
+      console.log("Online users", users);
+      setOnlineUsers(users);
+    });
+
+    // Cleanup on unmount - Save resources
     return () => {
-      socketInstance.disconnect();
+      socketRef.current?.disconnect();
     };
   }, [currentUserId]);
 
-  // Modify handleSubmit to use socket for sending message
+  // Track incoming messages
+  useEffect(() => {
+    if (!socketRef.current) return;
+
+    socketRef.current.on("receiveMessage", (message) => {
+      setMessages((prev) => [...prev, message]);
+      scrollToBottom();
+    });
+
+    socketRef.current.on("messageSent", (message) => {
+      setMessages((prev) => [...prev, message]);
+      scrollToBottom();
+    });
+
+    return () => {
+      socketRef.current?.disconnect();
+    };
+  });
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages]);
+
+  // Automatically scroll to bottom when message is sent
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+
+  // Handle message submit with socket
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
 
@@ -145,22 +172,23 @@ const Chat = () => {
         throw new Error(data.message || "Error sending message");
       }
 
-      // Emit message through socket with complete payload
-      socket.current.emit("sendMessage", {
-        content: newMessage.trim(),
-        receiverId: friendId,
-      });
-
       setNewMessage("");
       toast.success("Message sent successfully");
+
+      // Update new messages immediately
+      setMessages((prev) => [...prev, data.data]);
     } catch (error: unknown) {
       toast.error("Error sending message");
       console.log(error);
     }
   };
 
-  
- 
+  console.log(messages);
+
+  // Check if a user is online
+  const isUserOnline = (userId: number) => {
+    return onlineUsers.some((user) => user.userId === userId.toString());
+  };
 
   // Update greeting based on the time
   useEffect(() => {
@@ -279,47 +307,6 @@ const Chat = () => {
     fetchMessages();
   }, [currentUserId, friendId]);
 
-  // const handleSubmit = async (e: FormEvent) => {
-  //   e.preventDefault();
-
-  //   if (!currentUserId || !friendId || !newMessage.trim()) {
-  //     toast.error("You cannot send an empty message");
-  //     return;
-  //   }
-
-  //   try {
-  //     const response = await fetch("http://localhost:5650/messages/new", {
-  //       method: "POST",
-  //       headers: {
-  //         "Content-Type": "application/json",
-  //       },
-  //       body: JSON.stringify({
-  //         senderId: currentUserId,
-  //         receiverId: friendId,
-  //         content: newMessage.trim(),
-  //       }),
-  //     });
-
-  //     const data: APIResponse<Message> = await response.json();
-  //     if (!response.ok) {
-  //       toast.error("Error sending message");
-  //       throw new Error(data.message || "Error sending message");
-  //     }
-
-  //     socket.current.emit("sendMessage", {
-  //       senderId: currentUserId,
-  //       receiverId: friendId,
-  //     });
-
-  //     setNewMessage("");
-  //     toast.success("Message sent successfully");
-  //   } catch (error: unknown) {
-  //     toast.error("Error sending message");
-  //     console.log(error);
-  //     return;
-  //   }
-  // };
-
   const filteredUsers = users
     .filter(
       (user) =>
@@ -366,7 +353,7 @@ const Chat = () => {
           {filteredUsers.map((eachUser) => (
             <div
               onClick={() => setFriendId(eachUser?.id)}
-              className="hover:bg-gray border-b text-white flex space-x-3 w-full p-2 py-3 rounded-md hover:border-none cursor-pointer hover:text-crop"
+              className="hover:bg-gray relative border-b text-white flex space-x-3 w-full p-2 py-3 rounded-md hover:border-none cursor-pointer hover:text-crop"
               key={eachUser.id}
             >
               <img
@@ -374,6 +361,13 @@ const Chat = () => {
                 className="size-10 rounded-full object-cover"
                 alt=""
               />
+              {isUserOnline(eachUser.id) && (
+                <div className="absolute top-2 left-1 w-3 h-3 bg-blue-600 rounded-full"></div>
+              )}
+              {!isUserOnline(eachUser.id) && (
+                <div className="absolute top-2 left-1 w-3 h-3 bg-gray rounded-full"></div>
+              )}
+
               <div>
                 <div>{eachUser.name}</div>
                 <div>{eachUser.role}</div>
@@ -396,7 +390,10 @@ const Chat = () => {
           <p>Select a friend to start chatting.</p>
         )}
 
-        <div className="messages-container mt-4 p-3 h-[65%] overflow-scroll overflow-x-hidden">
+        <div
+          ref={messagesEndRef}
+          className="messages-container mt-4 p-3 h-[65%] overflow-scroll overflow-x-hidden"
+        >
           {messages.map((eachMessage, index) => (
             <div
               key={index}
@@ -405,7 +402,7 @@ const Chat = () => {
               }`}
             >
               <div
-                className={`message-item bg-blue-500 flex flex-col relative h-fit w-[400px] space-y-3 text-white p-2 rounded-md mb-2 ${
+                className={`message-item bg-blue-500 flex flex-col relative h-fit w-[400px] space-y-7 text-white p-2 rounded-md mb-2 ${
                   eachMessage.senderId === currentUserId ? "mr-auto" : "ml-auto"
                 } ${
                   eachMessage.senderId === currentUserId
@@ -417,8 +414,22 @@ const Chat = () => {
                     : "text-black"
                 }`}
               >
-                <p>{eachMessage.content}</p>
-                <p>{eachMessage.sender?.senderName}</p>
+                <p>
+                  {eachMessage.senderId === currentUserId ? (
+                    <span className="text-xs absolute right-2 top-1">You</span>
+                  ) : (
+                    ""
+                  )}
+                </p>
+
+                <p className="text-xs absolute right-2 -top-5">
+                  {eachMessage.senderId !== currentUserId &&
+                    eachMessage.senderName}
+                </p>
+
+                <p className="text-lg font-light my-2 mt-5">
+                  {eachMessage.content}
+                </p>
                 <p className="text-xs w-full text-right">
                   {formatDistanceToNow(new Date(eachMessage.timestamp))} ago
                 </p>

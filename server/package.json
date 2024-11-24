@@ -6,7 +6,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "ts-node index.ts",
-    "dev": "nodemon index.ts"
+    "dev": "nodemon index.ts",
+    "startJSON":"json-server --watch data/diseases.json --port 5420"
   },
   "author": "Steve Mwangi",
   "license": "MIT",

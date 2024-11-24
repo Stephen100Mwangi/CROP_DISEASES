@@ -38,11 +38,11 @@ interface Posts {
 }
 const Feed = () => {
   const [posts, setPosts] = useState<Posts[]>([]);
-  const [postCount, setPostsCount] = useState(0);
-  const [postTitle, setPostTitle] = useState("");
-  const [postContent, setPostContent] = useState("");
-  const [postImageURL, setPostImageURL] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
+  const [postCount, setPostsCount] = useState<number>(0);
+  const [postTitle, setPostTitle] = useState<string>("");
+  const [postContent, setPostContent] = useState<string>("");
+  const [postImageURL, setPostImageURL] = useState<string>("");
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [postTags, setPostTags] = useState<string[]>([]);
   const [currentUserId, setCurrentUserId] = useState(null);
 
@@ -53,6 +53,10 @@ const Feed = () => {
   const upload_preset = import.meta.env.VITE_UPLOAD_PRESET;
   const [previewURL, setPreviewURL] = useState("");
   const [showForm, setShowForm] = useState(false);
+  const [showUpdateForm, setShowUpdateForm] = useState(false);
+  const [editingPost, setEditingPost] = useState<Posts | null>(null);
+  const [targetId, setTargetId] = useState<string>("");
+  const [postsLoading, setPostsLoading] = useState(false);
 
   const customStyles: StylesConfig<{ label: string; value: string }, false> = {
     control: (provided) => ({
@@ -157,7 +161,7 @@ const Feed = () => {
     }
   };
 
-  const uploadImage = async (e) => {
+  const uploadImage = async (e:FormEvent) => {
     e.preventDefault();
     setShowPreview(false);
 
@@ -253,14 +257,16 @@ const Feed = () => {
         toast.error("Error fetching users");
         return;
       }
-
     };
 
     fetchPosts();
   }, []);
 
+  
+
   useEffect(() => {
     const fetchPosts = async () => {
+      setPostsLoading(true);
       const response = await fetch("http://localhost:5650/forumPosts/all");
       if (!response.ok) {
         toast.error("Error fetching posts");
@@ -270,14 +276,68 @@ const Feed = () => {
       const data = await response.json();
       const allPosts = data.forumPosts;
       const ownForumPosts = allPosts.filter(
-        (eachPost) => eachPost.userId === currentUserId
+        (eachPost: Posts) => eachPost.userId === currentUserId
       );
       setPosts(ownForumPosts);
       setPostsCount(ownForumPosts.length);
+      setPostsLoading(false);
     };
 
     fetchPosts();
-  }, []);
+  }, [currentUserId]);
+
+  const handleUpdatePost = async (postId: string) => {
+    if (!editingPost) {
+      toast.error("No post selected for update");
+      return;
+    }
+
+    try {
+      setIsLoading(true);
+      const response = await fetch(
+        `http://localhost:5650/forumPosts/${postId}`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            title: postTitle,
+            content: postContent,
+            // tags: postTags.length > 0 ? postTags : editingPost.tags,
+          }),
+        }
+      );
+
+      if (!response.ok) {
+        toast.error("Error updating post");
+        return;
+      }
+
+      toast.success("Post updated successfully");
+      setShowUpdateForm(false);
+      return;
+    } catch (error) {
+      console.log(error);
+      toast.error("Error updating post");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleUpdateClick = (postId: string) => async (e: React.MouseEvent) => {
+    e.preventDefault();
+    await handleUpdatePost(postId);
+  };
+
+  const handleUpdate = async (eachPost:Posts) => {
+    setEditingPost(eachPost);
+    setShowUpdateForm(true);
+    setPostTitle(eachPost.title);
+    setTargetId(eachPost.id); // Set the target ID as a string
+    setPostContent(eachPost.content);
+    setPostTags(eachPost.tags);
+  };
 
   return (
     <div className="w-full h-screen overflow-clip flex bg-gray">
@@ -333,6 +393,7 @@ const Feed = () => {
         </div>
       </div>
       <div className=" relative h-full flex-[4] overflow-scroll overflow-x-hidden grid grid-cols-2 p-5">
+        {postsLoading && <Spinner text="Fetching posts ..."></Spinner>}
         {posts.map((eachPost) => (
           <div
             className="w-[400px] shadow-xl bg-[#f9f9f9] p-3 max-h-fit rounded-xl flex flex-col space-y-3 items-center justify-center"
@@ -345,13 +406,91 @@ const Feed = () => {
             />
             <p className="font-lato font-bold text-xl">{eachPost.title}</p>
             <p className="font-thin text-lg line-clamp-3">{eachPost.content}</p>
+            <div className="flex space-x-1 w-full">
+              {eachPost.tags.map((eachTag) => (
+                <span className="text-xs bg-slate-500 text-gray px-3 items-center justify-center py-1">
+                  {eachTag}
+                </span>
+              ))}
+            </div>
+            <p>{eachPost.likesCount} likes</p>
+
+            <div className="flex items-center justify-between w-full">
+              <button className="items-center flex p-2 px-5 rounded-sm bg-danger text-gray hover:rounded-md">
+                Delete Project
+              </button>
+              <button
+                onClick={handleUpdateClick(targetId)}
+                className="items-center flex p-2 px-5 rounded-sm bg-slate-500 text-gray hover:rounded-md"
+              >
+                Update Project
+              </button>
+            </div>
             {/* <div>{eachPost.tags.map(eachTag => <div>{eachTag}</div>)}</div> */}
           </div>
         ))}
+        {showUpdateForm && (
+          <form
+            onSubmit={handleUpdate}
+            className="absolute bg-slate-500 left-10 shadow-xl flex flex-col space-y-4 p-3 rounded-md top-10 h-fit w-fit"
+          >
+            <div className="flex flex-col space-y-2">
+              <label htmlFor="Title" className="font-semibold text-gray">
+                Post Title
+              </label>
+              <input
+                value={postTitle}
+                type="text"
+                onChange={(e) => setPostTitle(e.target.value)}
+                className="font-thin p-2 px-3 outline-none"
+                placeholder="Input a title for your post"
+              />
+            </div>
+            <div className="flex flex-col space-y-2">
+              <label htmlFor="Tags" className="font-semibold text-gray">
+                What does your post cover
+              </label>
+              <Select
+                isMulti
+                className="outline-none"
+                styles={customStyles}
+                options={tagOptions}
+                onChange={(selectedOptions) =>
+                  setPostTags(selectedOptions.map((option) => option.value))
+                }
+              ></Select>
+            </div>
+
+            <div className="flex flex-col space-y-2">
+              <label htmlFor="Content" className="font-semibold text-gray">
+                Post Content
+              </label>
+              <textarea
+                value={postContent}
+                onChange={(e) => setPostContent(e.target.value)}
+                className="font-thin p-2 px-3 outline-none"
+                rows={5}
+                placeholder="Write something about your post"
+              />
+            </div>
+
+            <button
+              disabled={isLoading}
+              onClick={handleUpdatePost(targetId)}
+              className="p-2 px-4 hover:bg-white hover:text-slate-500 hover:shadow-md text-slate-500 bg-gray"
+            >
+              {isLoading ? (
+                <Spinner text={"Updating post ..."}></Spinner>
+              ) : (
+                "Update Post"
+              )}
+            </button>
+          </form>
+        )}
         {showForm && (
           <form
             onSubmit={handleData}
-            className="absolute bg-slate-500 -left-10 shadow-xl flex flex-col space-y-4 p-3 rounded-md top-10 h-fit w-fit"
+            className="absolute bg-slate-500 left-10 shadow-xl flex flex-col space-y-4 p-3 rounded-md top-10 h-fit w-fit"
           >
             <div className="flex flex-col space-y-2">
               <label htmlFor="Title" className="font-semibold text-gray">
@@ -387,8 +526,6 @@ const Feed = () => {
               <input
                 type="file"
                 onChange={handleImageChange}
-                name=""
-                id=""
                 className="font-thin p-2 px-3"
                 placeholder="Input a title for your post"
               />
@@ -421,6 +558,7 @@ const Feed = () => {
                 Post Content
               </label>
               <textarea
+                value={postContent}
                 onChange={(e) => setPostContent(e.target.value)}
                 className="font-thin p-2 px-3 outline-none"
                 rows={5}

@@ -8,6 +8,7 @@ import Dashboard from "./pages/Dashboard";
 import Chat from "./pages/Chat";
 import Lost from "./pages/Lost";
 import Feed from "./pages/Feed";
+import Diseases from "./pages/Diseases";
 
 const App = () => {
   return (
@@ -25,6 +26,7 @@ const App = () => {
           <Route path="/posts" element={<Dashboard></Dashboard>}></Route>
           <Route path="/chat" element={<Chat></Chat>}></Route>
           <Route path="/feed" element={<Feed></Feed>}></Route>
+          <Route path="/diseases" element={<Diseases></Diseases>}></Route>
 
           <Route path="/*" element={<Lost></Lost>}></Route>
         </Routes>

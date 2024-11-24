@@ -37,3 +37,6 @@ python/datasets
 python/saved_models
 python/model_training
 webSocket/node_modules
+sockets/node_modules
+testing/node_modules
+testing/cypress/node_modules
