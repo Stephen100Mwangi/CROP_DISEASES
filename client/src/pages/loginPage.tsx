@@ -1,80 +1,73 @@
 import { useState } from "react";
-import toast, {Toaster} from "react-hot-toast";
+import toast, { Toaster } from "react-hot-toast";
 import { Link, useNavigate } from "react-router-dom";
 import Spinner from "../components/Spinner";
 
- interface user_data{
-    name: string,
-    role: string,
-    email: string,
-    location:string
-  }
+interface user_data {
+  name: string;
+  role: string;
+  email: string;
+  location: string;
+}
 
 const LoginUser = () => {
-  const [email,setEmail] = useState("")
-  const [password,setPassword] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const navigate = useNavigate();
-  const [loading,setLoading] = useState(false);
+  const [loading, setLoading] = useState(false);
 
-
-  const loginUser = async (e:React.FormEvent) => {
-
+  const loginUser = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!email || !password) {
-      toast.error("All fields are required")
+      toast.error("All fields are required");
       return;
     }
 
-
-    try{
+    try {
       setLoading(true);
-      const response = await fetch("http://localhost:5650/auth/login",{
-        method:"POST",
-        headers:{
-          "Content-Type":"application/json"
+      const response = await fetch("http://localhost:5650/auth/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
         },
-        body:JSON.stringify({email,password})
-      })
+        body: JSON.stringify({ email, password }),
+      });
 
       const data = await response.json();
-      if(!response.ok){
+      if (!response.ok) {
         toast.error(data.message || "Error creating new user");
         return;
       }
 
       console.log(data);
 
-      const userData:user_data = {
+      const userData: user_data = {
         name: data.userExists.name,
         role: data.userExists.role,
         email: data.userExists.email,
-        location: data.userExists.location
-      }
-      
+        location: data.userExists.location,
+      };
+
       localStorage.setItem("user", JSON.stringify(userData));
 
       toast.success("User login successful");
       setTimeout(() => {
-        navigate('/home')
+        navigate("/home");
       }, 2000);
-
-    }catch(error){
-      toast.error("Internal server error")
+    } catch (error) {
+      toast.error("Internal server error");
       return;
-    }finally{
-      setLoading(false)
+    } finally {
+      setLoading(false);
     }
-    
-  }
+  };
   return (
     <div className="h-screen w-full bg-gray font-poppins flex justify-center items-center">
-      <Toaster
-        position="top-left"
-      ></Toaster>
+      <Toaster position="top-left"></Toaster>
       <form
         data-test="loginForm"
         onSubmit={loginUser}
-        className="shadow-xl rounded-md p-5 py-10 w-fit bg-white flex flex-col space-y-8 justify-center items-center"
+        className="shadow-xl rounded-md p-5 py-10 w-fit bg-white flex flex-col space-y-8 justify-center items-center max-sm:w-[340px]"
       >
         <p data-test="loginTitle" className="text-center font-bold text-xl">
           Log in Here
@@ -116,7 +109,7 @@ const LoginUser = () => {
             "Login"
           )}
         </button>
-        <div className="flex space-x-5">
+        <div className="flex space-x-5 max-sm:flex-col max-sm:space-y-5 max-sm:justify-center max-sm:items-center">
           <p className="text-red-500">Do not have an account</p>
           <Link to="/register" className="text-black">
             Register Here

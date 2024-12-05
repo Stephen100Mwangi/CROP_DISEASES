@@ -9,7 +9,7 @@ import { ImFeed } from "react-icons/im";
 import { IoChatbubbleEllipsesSharp } from "react-icons/io5";
 import { Link } from "react-router-dom";
 import { AiFillHome } from "react-icons/ai";
-
+import Spinner from "../components/Spinner";
 interface Disease {
   id: number;
   name: string;
@@ -22,18 +22,28 @@ interface Disease {
 const Diseases = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [diseases, setDiseases] = useState<Disease[]>([]);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const fetchDiseases = async () => {
-      const response = await fetch("http://localhost:5420/diseases");
+      try {
+        setLoading(true);
+        const response = await fetch("http://localhost:5420/diseases");
 
-      const data = await response.json();
+        const data = await response.json();
+        console.log(data);
 
-      if (!response.ok) {
-        toast.error("Error fetching diseases");
+        if (!response.ok) {
+          toast.error("Error fetching diseases");
+        }
+        toast.success("Diseases fetched successfully");
+        setDiseases(data);
+      } catch (error) {
+        console.log("Error fetching diseases");
+        console.log(error);
+      } finally {
+        setLoading(false);
       }
-
-      setDiseases(data);
     };
 
     fetchDiseases();
@@ -79,7 +89,7 @@ const Diseases = () => {
         </div>
       </div>
       <div className="flex justify-between items-start h-[calc(100vh-100px)] bg-crop w-full">
-        <div className="w-[25%] p-2 flex flex-col space-y-5">
+        <div className="w-[20%] p-2 flex flex-col space-y-5">
           <Link
             to={"/home"}
             className="flex relative space-x-3 text-gray group transition-all hover:text-crop cursor-pointer p-2 w-56 items-center hover:bg-gray"
@@ -121,7 +131,10 @@ const Diseases = () => {
             <p>Logout</p>
           </div>
         </div>
-        <div className="flex flex-wrap gap-20 w-[75%] bg-gray p-20 justify-between items-center h-[100%] overflow-scroll overflow-x-hidden">
+        <div className="flex relative flex-wrap gap-20 w-[80%] bg-gray p-20 justify-between items-center h-[100%] overflow-scroll overflow-x-hidden">
+          <div className="absolute">
+            {loading && <Spinner text={"Fetching diseases ..."}></Spinner>}
+          </div>
           {filteredDiseases.map((eachDisease) => (
             <div
               key={eachDisease.id}

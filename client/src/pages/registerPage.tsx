@@ -53,15 +53,15 @@ const RegisterPage = () => {
   };
 
   return (
-    <div className="flex justify-center items-center h-screen w-full bg-gray">
+    <div className="flex justify-center items-center h-screen overflow-clip w-full bg-gray max-md:max-h-fit max-sm:justify-center max-sm:items-center max-sm:pt-2">
       <Toaster position="top-left"></Toaster>
       <form
         onSubmit={registerUser}
-        className="shadow-xl rounded-md p-5 py-10 w-fit bg-white flex flex-col space-y-8 justify-center items-center"
+        className="shadow-xl rounded-md p-5 py-10 w-fit bg-white flex flex-col space-y-8 justify-center items-center max-sm:w-[340px] max-sm:h-fit max-sm:space-y-4 max-sm:py-2"
       >
         <p className="text-center font-bold text-xl">Create an Account</p>
-        <div className="flex space-x-5">
-          <div className="flex flex-col space-y-3 w-96">
+        <div className="flex space-x-5 max-md:flex-col max-md:space-x-0 max-md:space-y-10 max-sm:space-y-3">
+          <div className="flex flex-col space-y-3 w-96 max-sm:w-80 max-sm:mx-auto max-sm:space-y-2">
             <label htmlFor="Username" className="font-bold text-base text-crop">
               Username
             </label>
@@ -73,7 +73,7 @@ const RegisterPage = () => {
               className="p-2 focus:outline-crop font-thin focus:outline  text-black font-openSans w-[100%]"
             ></input>
           </div>
-          <div className="flex flex-col space-y-3 w-96">
+          <div className="flex flex-col space-y-3 w-96 max-sm:w-80 max-sm:mx-auto max-sm:space-y-2">
             <label htmlFor="Email" className="font-bold text-base text-crop">
               Email
             </label>
@@ -87,8 +87,8 @@ const RegisterPage = () => {
           </div>
         </div>
 
-        <div className="flex space-x-5">
-          <div className="flex flex-col space-y-3 w-96">
+        <div className="flex space-x-5 max-md:flex-col max-md:space-x-0 max-md:space-y-10 max-sm:space-y-3">
+          <div className="flex flex-col space-y-3 w-96 max-sm:w-80 max-sm:mx-auto max-sm:space-y-2">
             <label htmlFor="Password" className="font-bold text-base text-crop">
               Password
             </label>
@@ -100,7 +100,7 @@ const RegisterPage = () => {
               className="p-2 focus:outline-crop font-thin focus:outline  text-black font-openSans w-[100%]"
             ></input>
           </div>
-          <div className="flex flex-col space-y-3 w-96">
+          <div className="flex flex-col space-y-3 w-96 max-sm:w-80 max-sm:mx-auto max-sm:space-y-2">
             <label
               htmlFor="Confirm Password"
               className="font-bold text-base text-crop"
@@ -117,8 +117,8 @@ const RegisterPage = () => {
           </div>
         </div>
 
-        <div className="flex space-x-5">
-          <div className="flex flex-col space-y-3 w-96">
+        <div className="flex space-x-5 max-md:flex-col max-md:space-x-0 max-md:space-y-10 max-sm:space-y-3">
+          <div className="flex flex-col space-y-3 w-96 max-sm:w-80 max-sm:mx-auto max-sm:space-y-2">
             <label htmlFor="Role" className="font-bold text-base text-crop">
               Role
             </label>
@@ -131,7 +131,7 @@ const RegisterPage = () => {
               className="p-2 focus:outline-crop font-thin focus:outline  text-black font-openSans w-[100%]"
             ></input>
           </div>
-          <div className="flex flex-col space-y-3 w-96">
+          <div className="flex flex-col space-y-3 w-96 max-sm:w-80 max-sm:mx-auto max-sm:space-y-2">
             <label htmlFor="Location" className="font-bold text-base text-crop">
               Location
             </label>
@@ -147,7 +147,7 @@ const RegisterPage = () => {
 
         <button
           disabled={loading}
-          className="bg-crop text-gray p-2 w-full rounded-full px-12 hover:shadow-xl hover:bg-gray hover:text-crop"
+          className="bg-crop text-gray p-2 w-full rounded-full px-12 hover:shadow-xl hover:bg-gray hover:text-crop max-md:mx-auto max-md:w-[300px]"
         >
           {loading ? (
             <Spinner text="Processing...Please wait"></Spinner>

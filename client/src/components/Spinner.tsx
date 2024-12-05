@@ -7,7 +7,7 @@ interface SpinnerProps{
 
 const Spinner:React.FC<SpinnerProps> = ({text}) => {
   return (
-    <div className="flex space-x-5 items-center justify-center">
+    <div className="flex space-x-5 items-center justify-center mx-auto">
       <p>{text}</p>
       <FaSpinner className="animate-spin"></FaSpinner>
     </div>

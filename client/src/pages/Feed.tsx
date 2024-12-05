@@ -10,6 +10,8 @@ import Spinner from "../components/Spinner";
 import toast, { Toaster } from "react-hot-toast";
 import axios from "axios";
 import { IoCloudUpload } from "react-icons/io5";
+import { IoMenuOutline } from "react-icons/io5";
+import { IoMdClose } from "react-icons/io";
 
 interface UserData {
   senderName: string;
@@ -57,6 +59,7 @@ const Feed = () => {
   const [editingPost, setEditingPost] = useState<Posts | null>(null);
   const [targetId, setTargetId] = useState<string>("");
   const [postsLoading, setPostsLoading] = useState(false);
+  const [showMenu, setShowMenu] = useState(false);
 
   const customStyles: StylesConfig<{ label: string; value: string }, false> = {
     control: (provided) => ({
@@ -161,7 +164,7 @@ const Feed = () => {
     }
   };
 
-  const uploadImage = async (e:FormEvent) => {
+  const uploadImage = async (e: FormEvent) => {
     e.preventDefault();
     setShowPreview(false);
 
@@ -262,8 +265,6 @@ const Feed = () => {
     fetchPosts();
   }, []);
 
-  
-
   useEffect(() => {
     const fetchPosts = async () => {
       setPostsLoading(true);
@@ -330,7 +331,7 @@ const Feed = () => {
     await handleUpdatePost(postId);
   };
 
-  const handleUpdate = async (eachPost:Posts) => {
+  const handleUpdate = async (eachPost: Posts) => {
     setEditingPost(eachPost);
     setShowUpdateForm(true);
     setPostTitle(eachPost.title);
@@ -340,39 +341,83 @@ const Feed = () => {
   };
 
   return (
-    <div className="w-full h-screen overflow-clip flex bg-gray">
+    <div className="w-full h-screen overflow-clip flex bg-gray max-sm:flex-col max-sm:space-y-0">
       <Toaster position="top-left"></Toaster>
-      <div className="h-full flex-[1] p-5 py-2 flex flex-col space-y-5 border border-r-slate-500">
-        <div className="logo flex items-center space-x-5 my-5 font-light font-roboto">
+      <div className="h-screen flex-[1] p-5 flex flex-col space-y-5 border border-r-slate-500 max-sm:w-full max-sm:fit max-sm:pb-0 max-sm:border-none max-sm:bg-crop max-sm:flex-[.5]">
+        <div className="logo flex items-center space-x-5 my-5 font-light font-roboto max-sm:my-0">
           <div className="flex bg-gray items-center justify-center size-10 overflow-clip rounded-full">
             <img src="/crop.svg" className="size-12" alt="" />
           </div>
           <p className="text-lg">
-            Crop<span className="text-gray font-lato font-bold">Guard</span>
+            Crop<span className="text-gray font-lato font-bold">Guard </span>
           </p>
         </div>
-        <div className="bg-slate-500 justify-start flex items-center text-white p-4 px-8 space-x-5 rounded-md w-48 my-5">
+
+        {showMenu ? (
+          <IoMdClose
+            className="text-3xl cursor-pointer absolute top-3 right-8 sm:hidden"
+            onClick={() => setShowMenu(false)}
+          ></IoMdClose>
+        ) : (
+          <IoMenuOutline
+            className="text-3xl cursor-pointer absolute top-3 right-8 sm:hidden"
+            onClick={() => setShowMenu(true)}
+          ></IoMenuOutline>
+        )}
+
+        {showMenu && (
+          <div className="bg-crop z-[1000] text-gray font-light p-3 rounded-sm top-20 right-0 px-5 flex flex-col space-y-3 absolute">
+            <div className="flex space-x-3">
+              <p className="text-lg font-normal">34</p>
+              <p className="font-thin">Followers</p>
+            </div>
+            <div className="flex space-x-3">
+              <p className="text-lg font-normal">{postCount}</p>
+              <p className="font-thin">Posts</p>
+            </div>
+            <div className="flex space-x-3">
+              <p className="text-lg font-normal">5</p>
+              <p className="font-thin">Notifications</p>
+            </div>
+            <div className="flex space-x-3">
+              <p className="text-lg font-normal">5</p>
+              <p className="font-thin">Notifications</p>
+            </div>
+            <button
+              onClick={() => setShowForm((prev) => !prev)}
+              className="bg-gray p-2 w-36  text-crop px-5 rounded-md sm:hidden"
+            >
+              Create a post
+            </button>
+            <div className="flex space-x-6 bg-danger text-gray px-5 rounded-md hover:bg-gray transition-all cursor-pointer p-2 w-36 items-center hover:text-danger sm:hidden ">
+              <RiLogoutCircleFill className="text-3xl"></RiLogoutCircleFill>
+              <p>Logout</p>
+            </div>
+          </div>
+        )}
+
+        <div className="bg-slate-500 justify-start flex items-center text-white p-4 px-8 space-x-5 rounded-md w-48 my-5 max-sm:p-3 max-sm:w-32 max-sm:my-0 max-sm:hidden">
           <FaUsers className="text-3xl"></FaUsers>
           <div className="flex flex-col space-y-3 items-center justify-normal">
             <p className="text-xl font-medium">34</p>
             <p className="font-thin">Followers</p>
           </div>
         </div>
-        <div className="bg-slate-500 justify-start flex items-center text-white p-4 px-8 space-x-5 rounded-md w-48 my-5">
+        <div className="bg-slate-500 justify-start flex items-center text-white p-4 px-8 space-x-5 rounded-md w-48 my-5 max-sm:p-3 max-sm:w-32 max-sm:my-0 max-sm:hidden">
           <MdOutlineCompost className="text-3xl"></MdOutlineCompost>
           <div className="flex flex-col space-y-3 items-center justify-normal">
             <p className="text-xl font-medium">{postCount}</p>
             <p className="font-thin">Posts</p>
           </div>
         </div>
-        <div className="bg-slate-500 justify-start flex items-center text-white p-4 px-8 space-x-5 rounded-md w-48 my-5">
+        <div className="bg-slate-500 justify-start flex items-center text-white p-4 px-8 space-x-5 rounded-md w-48 my-5 max-sm:p-3 max-sm:w-32 max-sm:my-0 max-sm:hidden">
           <MdNotificationsActive className="scale-150"></MdNotificationsActive>
           <div className="flex flex-col space-y-3 items-center justify-normal">
             <p className="text-xl font-medium">5</p>
             <p className="font-thin">Notifications</p>
           </div>
         </div>
-        <div className="bg-slate-500 justify-start flex items-center text-white p-4 px-8 space-x-5 rounded-md w-48 my-5">
+        <div className="bg-slate-500 justify-start flex items-center text-white p-4 px-8 space-x-5 rounded-md w-48 my-5 max-sm:p-3 max-sm:w-32 max-sm:my-0 max-sm:hidden">
           <IoChatbubbleEllipsesSharp className="text-3xl"></IoChatbubbleEllipsesSharp>
           <div className="flex flex-col space-y-3 items-center justify-normal">
             <p className="text-xl font-medium">12</p>
@@ -382,27 +427,30 @@ const Feed = () => {
 
         <button
           onClick={() => setShowForm((prev) => !prev)}
-          className="bg-crop p-2 w-48 text-gray px-5 rounded-md"
+          className="bg-crop p-2 w-48 text-gray px-5 rounded-md max-sm:hidden"
         >
           Create a post
         </button>
 
-        <div className="flex absolute bottom-5 space-x-3 hover:text-gray transition-all cursor-pointer p-2 w-56 items-center hover:bg-danger ">
+        <div className="flex absolute bottom-5 space-x-3 hover:text-gray transition-all cursor-pointer p-2 w-56 items-center hover:bg-danger max-sm:hidden ">
           <RiLogoutCircleFill className="text-3xl"></RiLogoutCircleFill>
           <p>Logout</p>
         </div>
       </div>
-      <div className=" relative h-full flex-[4] overflow-scroll overflow-x-hidden grid grid-cols-2 p-5">
-        {postsLoading && <Spinner text="Fetching posts ..."></Spinner>}
+      <div className=" relative h-full flex-[5] overflow-scroll overflow-x-hidden grid grid-cols-2 p-5 max-sm:flex items-center justify-center w-full max-sm:grid-cols-1 flex-wrap">
+        <div className="absolute top-5 left-[35%]">
+          {postsLoading && <Spinner text="Fetching posts ..."></Spinner>}
+        </div>
         {posts.map((eachPost) => (
           <div
-            className="w-[400px] shadow-xl bg-[#f9f9f9] p-3 max-h-fit rounded-xl flex flex-col space-y-3 items-center justify-center"
+            className="w-[400px] shadow-xl bg-[#f9f9f9] p-3 max-h-fit rounded-xl flex flex-col space-y-3 items-center justify-center mx-auto max-sm:w-[350px] max-sm:mx-auto max-sm:my-5"
             key={eachPost.id}
           >
             <img
-              className="w-[100%] h-64 object-cover rounded-xl"
+              className="w-[100%] h-56 object-cover rounded-xl max-sm:h-48"
               src={eachPost?.imageUrl}
               alt={eachPost.title}
+              loading="lazy"
             />
             <p className="font-lato font-bold text-xl">{eachPost.title}</p>
             <p className="font-thin text-lg line-clamp-3">{eachPost.content}</p>
@@ -456,7 +504,10 @@ const Feed = () => {
                 styles={customStyles}
                 options={tagOptions}
                 onChange={(selectedOptions) =>
-                  setPostTags(selectedOptions.map((option) => option.value))
+                  setPostTags(
+                    selectedOptions &&
+                      selectedOptions.map((option) => option.value)
+                  )
                 }
               ></Select>
             </div>

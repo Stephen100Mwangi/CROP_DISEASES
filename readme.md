@@ -63,3 +63,30 @@ For a crop diseases detection application, the design should reflect a sense of 
 **Soft Gray**: `#E0E0E0` (for borders, dividers, and less important text)
 
 This combination of colors and fonts creates a professional, approachable, and nature-inspired interface for your application.
+
+<!-- Forum Posts -->
+Forum Posts
+![Forum Posts](image.png)
+
+<!-- Chat application -->
+Chat application
+![Chat](image-2.png)
+Farmers can chat with other farmers in real time.
+
+<!-- Disease -->
+![Diseases](image-1.png)
+This page provides more information about diseases including disease name and prevention mechanisms
+
+<!-- Personal Dashboard -->
+Personal Dashboard
+![Personal Dashboard](image-3.png)
+
+This page provides information about all the users currently in our application. The farmer can create a post, view post they have created successfully. Additionally, the user can see the notifications they have.
+
+<!-- Post creation -->
+Post Creation
+![Post creation](image-4.png)
+
+![Successful Post creation](image-5.png)
+
+Image are uploaded to and hosted by [Cloudinary](https://cloudinary.com/). A success message is sent back to the user once a post is created successfully and the post appears on the users dashboard.

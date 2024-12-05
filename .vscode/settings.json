@@ -3,6 +3,8 @@
     "argmax",
     "autoincrement",
     "Chatbubble",
+    "crossentropy",
+    "imagenet",
     "jsonify",
     "oryzae",
     "pycache",

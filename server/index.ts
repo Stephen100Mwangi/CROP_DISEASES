@@ -10,6 +10,7 @@ import notificationsRouter from './routes/notificationsRouter';
 import alertRouter from './routes/alertRouter';
 import imageRouter from './routes/imageRouter';
 import messageRouter from './routes/messageRoute';
+import commentRouter from './routes/commentRouter';
 
 dotenv.config();
 
@@ -29,6 +30,7 @@ app.use('/notifications',notificationsRouter)
 app.use('/alerts',alertRouter);
 app.use('/imageUpload',imageRouter);
 app.use('/messages',messageRouter)
+app.use('/comments',commentRouter)
 
 
 // Health Check

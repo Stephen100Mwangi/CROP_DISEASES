@@ -58,7 +58,7 @@ const Chat = () => {
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
-
+  
   // onlineUsers will be filled as users connect to the socket
   const [onlineUsers, setOnlineUsers] = useState<
     { userId: string; socketId: string }[]
@@ -319,7 +319,7 @@ const Chat = () => {
   return (
     <div className="flex space-x-0 h-screen overflow-clip w-full">
       <Toaster position="top-left"></Toaster>
-      <div className="flex-[1.5] p-5 px-2">
+      <div className="flex-[1.5] p-5 px-2 bg-crop">
         <div className="logo flex items-center space-x-5 my-10 font-light font-roboto">
           <div className="flex bg-gray items-center justify-center size-10 overflow-clip rounded-full">
             <img src="/crop.svg" className="size-12" alt="" />

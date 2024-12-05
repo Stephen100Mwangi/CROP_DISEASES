@@ -40,3 +40,10 @@ webSocket/node_modules
 sockets/node_modules
 testing/node_modules
 testing/cypress/node_modules
+.vscode/
+
+python/__pycache__
+python/datasets
+python/env
+python/models
+testing/jest/node_modules

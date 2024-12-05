@@ -12,7 +12,7 @@ import Diseases from "./pages/Diseases";
 
 const App = () => {
   return (
-    <div className="flex bg-crop h-screen w-full">
+    <div className="flex bg-gray h-screen w-full">
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<HeroPage></HeroPage>}></Route>
