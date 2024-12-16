@@ -4,11 +4,13 @@
     "autoincrement",
     "Chatbubble",
     "crossentropy",
+    "Ghku",
     "imagenet",
     "jsonify",
     "oryzae",
     "pycache",
     "Toastify",
-    "venv"
+    "venv",
+    "VITE"
   ]
 }

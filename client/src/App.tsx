@@ -9,6 +9,7 @@ import Chat from "./pages/Chat";
 import Lost from "./pages/Lost";
 import Feed from "./pages/Feed";
 import Diseases from "./pages/Diseases";
+import Notifications from "./pages/Notifications";
 
 const App = () => {
   return (
@@ -27,6 +28,10 @@ const App = () => {
           <Route path="/chat" element={<Chat></Chat>}></Route>
           <Route path="/feed" element={<Feed></Feed>}></Route>
           <Route path="/diseases" element={<Diseases></Diseases>}></Route>
+          <Route
+            path="/notifications"
+            element={<Notifications></Notifications>}
+          ></Route>
 
           <Route path="/*" element={<Lost></Lost>}></Route>
         </Routes>

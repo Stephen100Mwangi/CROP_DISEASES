@@ -1,5 +1,7 @@
 server/node_modules/
 client/node_modules/
+.vscode/
+node_modules/
 
 server/.env
 client/.env
@@ -11,6 +13,8 @@ python/*$py.class
 python/*.so
 python/.Python
 python/venv/
+python/env
+python/models
 
 # Data
 python/data/
